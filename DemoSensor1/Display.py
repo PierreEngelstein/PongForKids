@@ -1,5 +1,8 @@
 import serial
-
+import laser
+import Monster
+from random import randint
+ 
 class Display(object):
     
     def __init__(self, root, canvas, height):
@@ -8,7 +11,14 @@ class Display(object):
         self.c = canvas
         self.dotPosX = 10
         self.dotPosY = 10
+        self.maxPos = 400
+        self.isLaser = False
+        self.monster = None
+        self.score = 0
+        self.timeSinceLaser = 0
+        self.laser = laser.laser(self.c, self.dotPosX, self.dotPosY)
         self.dot = self.c.create_oval(self.dotPosX-10, self.dotPosY-10, self.dotPosX+10, self.dotPosY+10, fill="#aeaeae")
+        self.scoreText = self.c.create_text(1100, 50, fill = "black", anchor = "nw", text = "touche : 0")
         self.ser = serial.Serial('/dev/ttyACM0', 9600)
         self.lastPos = []
         self.update()
@@ -16,24 +26,43 @@ class Display(object):
         return
 
     def update(self):
+        self.root.bind("<Return>", self.launchLaser)
         try:
             a = int(self.ser.readline())
         except:
             a = 0
-        print ("a = " + str(a))
-        b = self.smooth(a)
-        b = (b-50)*(self.height-20)/350
-        print ("b = " + str(b))
+        self.b = self.smooth(a)
+        self.b = (self.b-150)*(self.height-20)/(self.maxPos - 150)
         self.c.delete(self.dot)
-        self.dot = self.c.create_oval(10, b, 30, b + 20, fill="#aeaeae")
+        self.dot = self.c.create_oval(10, self.b, 30, self.b + 20, fill="#aeaeae")
+        if(self.isLaser):
+            #Laser update
+            self.timeSinceLaser += 10
+            if self.laser.posx >= 1000:
+                self.laser.delete()
+                self.laser = laser.laser(self.c, self.dotPosX, self.b + 10)
+                self.timeSinceLaser = 0
+            self.laser.update()
+            #Monster update
+            if self.monster == None:
+                self.monster = Monster.Monster(self.c, 800, randint(50, 550))
+            if self.laser.posx >= self.monster.posx and (self.laser.posy <= self.monster.posy + 30 and self.laser.posy >= self.monster.posy - 30):
+                print("Killed monster")
+                self.monster.delete()
+                self.monster = None
+                self.score += 1
+                self.c.itemconfig(self.scoreText, text = "touche : " + str(self.score))
+        else:
+            if self.monster != None:
+                self.monster.delete()
+                self.monster = None
         self.c.pack()
-        self.root.after(10, self.update)
+        self.root.after(5, self.update)
         return
     
     def smooth(self, pos):
         #Smooth the value depending on the previous values (Pascal triangle method)
         self.storePos(pos)
-        print self.lastPos
         if (len(self.lastPos) == 5):
             med = (self.lastPos[0] + 8*self.lastPos[1] + 28*self.lastPos[2] + 56*self.lastPos[3] + 70*self.lastPos[4])/163
             return med
@@ -44,9 +73,17 @@ class Display(object):
         #Store the last 5 values in an array used for smoothing
         if (len(self.lastPos) == 5):
             self.lastPos.remove(self.lastPos[0])
-        if(pos < 50):
-            pos = 50
-        if(pos > 400):
-            pos = 400
+        if(pos < 150):
+            pos = 150
+        if(pos > self.maxPos):
+            pos = self.maxPos
         self.lastPos.append(pos)
         return
+
+    def launchLaser(self, event):
+        self.isLaser = not self.isLaser
+        self.laser.delete()
+        self.laser = laser.laser(self.c, self.dotPosX, self.b)
+        self.timeSinceLaser = 0
+        print self.isLaser
+        
