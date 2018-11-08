@@ -1,0 +1,17 @@
+1er truc : slide avec main / capteur -> introduire sujet
+    Sert à contrôler l'ordinateur avec la main. Domaines : médical, industriel, jeu vidéo
+2em truc : presenter les composants : capteur de distance - arduino mini ordinateur
+        communication entre le capteur et l'ordinateur, information renvoyée à distance par le cable. Deux programmes tournent => s'échangent des infos
+        
+    mesure distance : plus la lumière est renvoyée rapidement, plus la main est proche (explication avec torche telephone). Identique qu'avec les télécommandes
+        renvoie des numéros en fonction de la distance. Transforme en position de la bille à l'écran.
+        
+On vous propose de brancher le capteur
+    -> C'est sans danger !
+    -> Deux cables pour l'électricité (comme pour les chargeurs de téléphones / branchement lampe) rouge (+) et noir (-)
+    -> Un cable gris pour l'échange d'information de la hauteur de la balle
+    
+
+    
+
+Bonjour a vous. On va vous montrer une petite manipulation pour vous faire découvrir comment contrôler l'ordinateur avec une main, à distance. Ce que l'on va vous montrer est utilisé dans différents domaines tel que le médical, l'industriel, ou encore ... les jeux vidéo.
