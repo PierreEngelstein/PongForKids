@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 import ReadThread
 
 class IHM():
@@ -22,5 +22,5 @@ class IHM():
         
         return
     def click(self, event):
-        print "BLAHHHHHHHHHHIHM"
+        print("BLAHHHHHHHHHHIHM")
         return

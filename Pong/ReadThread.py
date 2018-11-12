@@ -1,10 +1,13 @@
-import serial
+import sys,serial
 from threading import Thread
+import time
 
 class MyThread(Thread):
     def __init__(self, val):
         Thread.__init__(self)
-        self.ser = serial.Serial('/dev/ttyACM0', 9600)
+        dev='/dev/ttyACM0'
+        if sys.platform == 'darwin':   dev='/dev/cu.usbmodem1411'
+        self.ser = serial.Serial(dev, 9600)
         self.buffer = '0'
         self.sensor1 = 0
         self.sensor2 = 0
@@ -15,7 +18,10 @@ class MyThread(Thread):
     #Infinite loop to read values from sensors
     def run(self):
         while(self.running):
-            sensors = self.ser.read()
+            time.sleep(0.5)
+            sensors = repr(self.ser.read())
+            #print(sensors+'\n')
+            #print(self.buffer+'\n')
             if (sensors == "a"):   #Read second captor value
                 self.sensor2 = int(self.buffer)
                 self.buffer = '0'
@@ -29,6 +35,7 @@ class MyThread(Thread):
         
     #Returns the current value of both sensors
     def getSensors(self, id):
+        #self.stop()
         if id == 1:
             self.isRead1 = True
             return self.sensor1

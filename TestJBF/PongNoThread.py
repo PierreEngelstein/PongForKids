@@ -1,5 +1,5 @@
 from tkinter import *
-import ReadThread
+import SerialReader
 import Paddle
 import Ball
 import math
@@ -8,10 +8,9 @@ import random
 class PongGame():
     def __init__(self):
         #Start the reader thread
-        self.readerThread = ReadThread.MyThread(10)
-        self.readerThread.setName("Reader")
-        self.readerThread.start()
-        
+        #self.readerThread = ReadThread.MyThread(10)
+        self.readerThread=SerialReader.SerialReader()
+
         #Frame parameters
         self.width = 1200;
         self.height = 600;
@@ -55,22 +54,18 @@ class PongGame():
     #Update the game
     def update(self):
         #Update the debug text to the current sensor values
-        print()
-        if self.readerThread.isRead1 == False:
-            self.sensor1 = self.readerThread.getSensors(1)
-            print(self.sensor1)
-            self.canvas.itemconfigure(self.debugText, text="Sensor 1 : " + str(self.sensor1) + "\nSensor 2 : " + str(self.sensor2))
-            self.paddleLeft.update(self.sensor1)
-        if self.readerThread.isRead2 == False:
-            self.sensor2 = self.readerThread.getSensors(2)
-            self.paddleRight.update(self.sensor2)
+        self.sensor1,self.sensor2=self.readerThread.getValues()
+        self.canvas.itemconfigure(self.debugText,
+                                  text="Sensor 1 : " + str(self.sensor1) + "\nSensor 2 : " + str(self.sensor2))
+        self.paddleLeft.update(self.sensor1)
+        self.paddleRight.update(self.sensor2)
         self.ball.update(self.width, self.height, self.paddleLeft, self.paddleRight)
         self.canvas.pack()
         self.root.after(10, self.update)
 
     #Custom close method : stop the reader thread and stop the TKinter frame
     def close(self):
-        self.readerThread.stop()
+        self.readerThread.ser.close()
         self.root.destroy()
 
 ###########################
