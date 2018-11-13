@@ -21,6 +21,7 @@ class Display(object):
         self.scoreText = self.c.create_text(1100, 50, fill = "black", anchor = "nw", text = "touche : 0")
         dev='/dev/ttyACM0'
         if sys.platform == 'darwin':   dev='/dev/cu.usbmodem1411'
+        if sys.platform == 'win32' : dev='COM3'
         self.ser = serial.Serial(dev, 9600)
         self.lastPos = []
         self.update()
