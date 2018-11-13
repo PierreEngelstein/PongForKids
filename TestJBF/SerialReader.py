@@ -8,6 +8,7 @@ class SerialReader:
     def __init__(self):
         dev='/dev/ttyACM0'
         if sys.platform == 'darwin':   dev='/dev/cu.usbmodem1411'
+        if sys.platform == 'win32': dev='COM3'
         self.ser = serial.Serial(dev, 9600)
         self.a_vals=deque([])
         self.b_vals=deque([])
