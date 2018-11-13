@@ -1,4 +1,4 @@
-import serial
+import serial,sys
 import laser
 import Monster
 from random import randint
@@ -19,7 +19,9 @@ class Display(object):
         self.laser = laser.laser(self.c, self.dotPosX, self.dotPosY)
         self.dot = self.c.create_oval(self.dotPosX-10, self.dotPosY-10, self.dotPosX+10, self.dotPosY+10, fill="#aeaeae")
         self.scoreText = self.c.create_text(1100, 50, fill = "black", anchor = "nw", text = "touche : 0")
-        self.ser = serial.Serial('/dev/ttyACM0', 9600)
+        dev='/dev/ttyACM0'
+        if sys.platform == 'darwin':   dev='/dev/cu.usbmodem1411'
+        self.ser = serial.Serial(dev, 9600)
         self.lastPos = []
         self.update()
         self.root.mainloop()
@@ -28,7 +30,11 @@ class Display(object):
     def update(self):
         self.root.bind("<Return>", self.launchLaser)
         try:
-            a = int(self.ser.readline())
+            #t=self.ser.readline()
+            a=self.ser.readline().decode()
+            #a =repr(a)
+            a=int(a)
+            print(a)
         except:
             a = 0
         self.b = self.smooth(a)
@@ -85,5 +91,5 @@ class Display(object):
         self.laser.delete()
         self.laser = laser.laser(self.c, self.dotPosX, self.b)
         self.timeSinceLaser = 0
-        print self.isLaser
+        print(self.isLaser)
         

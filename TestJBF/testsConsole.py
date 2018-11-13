@@ -58,6 +58,7 @@ except:
 ######################
 # Use case 4
 ######################
+
 import SerialReaderThread
 myThread = SerialReaderThread.SerialReaderThread()
 myThread.start()
