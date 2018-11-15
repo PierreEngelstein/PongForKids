@@ -40,4 +40,4 @@ class SerialReaderThread(Thread):
         self.ser.close()
     
     def getValues(self):
-        return self.valA, self.valB
+        return int(self.valA), int(self.valB)

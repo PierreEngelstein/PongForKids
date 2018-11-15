@@ -30,6 +30,7 @@ class SerialReader:
             self.b_vals.append(raw_b)
             self.valB=st.mean(self.b_vals)
             if len(self.b_vals) >= self.filter_size : self.b_vals.popleft()
-            return self.valA,self.valA
+            print(self.valA)
+            return int(self.valA),int(self.valA)
         except:
             return 0,0

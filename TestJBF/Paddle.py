@@ -13,10 +13,15 @@ class Paddle(object):
         self.sensorMin = 50
         self.sensorMax = 400
         self.paddle = self.canvas.create_rectangle(self.posX - thickness/2, self.posY - length / 2, self.posX + thickness / 2, self.posY  + length / 2, fill = "#FFFFFF")
+
     def update(self, y):
         #smooth the value of y based on the precedent values:
         #valueY = self.smooth(y)
         valueY = y
+        if (y < self.sensorMin):
+            valueY = self.sensorMin
+        if (y > self.sensorMax):
+            valueY = self.sensorMax
         valueY = (valueY - self.sensorMin) * (self.maxPos - self.minPos)/ (self.sensorMax - self.sensorMin) + self.minPos
         self.canvas.move(self.paddle, 0, valueY - self.posY)
         self.posY = valueY
@@ -44,7 +49,6 @@ class Paddle(object):
             pos = self.sensorMin
         if(pos > self.sensorMax):
             pos = self.sensorMax
-        
         self.lastPos.append(pos)
         return
     

@@ -55,7 +55,6 @@ class PongGame():
     #Update the game
     def update(self):
         #Update the debug text to the current sensor values
-        print()
         if self.readerThread.isRead1 == False:
             self.sensor1 = self.readerThread.getSensors(1)
             print(self.sensor1)
